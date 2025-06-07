@@ -472,6 +472,23 @@ docker run \
 }
 ```
 
+4. In the VSCode configuration:
+```json
+"mssql": {
+  "type": "stdio",
+  "command": "dotnet",
+  "args": [
+      "exec",
+      "YOUR_PATH_TO_DLL/bin/Debug/net8.0/Core.Infrastructure.McpServer.dll"
+  ],
+  "env":{ 
+      "MSSQL_CONNECTIONSTRING": "Data Source=yourserver;Initial Catalog=databasename;uid=user;Password=*****;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
+  }
+}
+```
+
+
+
 When these settings are `false` (the default), the respective execution tools will not be registered and will not be available to clients. This provides additional security layers when you only want to allow read-only operations.
 
 ### Database Connection String
