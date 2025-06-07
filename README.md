@@ -18,17 +18,12 @@ The MCP client operates in one of two modes:
 - Retrieve detailed schema information for specific tables
 - Comprehensive stored procedure management and execution
 
-### Stored Procedure Support
-- **Parameter Discovery**: Get detailed parameter information in table or JSON Schema format
-- **Type-Safe Execution**: Automatic JSON-to-SQL type conversion based on parameter metadata
-- **Rich Metadata**: Support for input/output parameters, default values, and data type constraints
-- **Cross-Database Operations**: Execute procedures across different databases (Server Mode)
-
-### Advanced Features
-- **JSON Schema Output**: Parameter metadata compatible with validation tools
-- **Case-Insensitive Parameters**: Flexible parameter naming with @ prefix normalization
-- **SQL Server Feature Detection**: Comprehensive capability reporting
-- **Two-Mode Architecture**: Optimized for both single-database and multi-database scenarios
+### Advanced Tools
+- Export/import tables as CSV
+- Paginated and streaming query support
+- Index, view, and function metadata
+- Script execution and discovery tools
+- Cursor guidance for query navigation
 
 ### Security & Configuration
 - Configurable tool enablement for security
@@ -39,12 +34,10 @@ The MCP client operates in one of two modes:
 
 ### Prerequisites
 
-- .NET 9.0 (for local development/deployment)
+- .NET 8.0 (for local development/deployment)
 - Docker (for container deployment)
 
 ### Build Instructions (for development)
-
-If you want to build the project from source:
 
 1. Clone this repository:
    ```bash
@@ -59,11 +52,6 @@ If you want to build the project from source:
 3. Build the project using:
    ```bash
    dotnet build src/mssqlclient.sln
-   ```
-
-4. Run the tests:
-   ```bash
-   dotnet test src/mssqlclient.sln
    ```
 
 ## Docker Support
@@ -92,27 +80,6 @@ docker build -f src/Core.Infrastructure.McpServer/Dockerfile -t mssqlclient-mcp-
 docker run -d --name mssql-mcp -e "MSSQL_CONNECTIONSTRING=Server=your_server;Database=your_db;User Id=your_user;Password=your_password;TrustServerCertificate=True;" mssqlclient-mcp-server:latest
 ```
 
-### Local Registry Push
-
-To push to your local registry:
-
-```bash
-# Build the Docker image
-docker build -f src/Core.Infrastructure.McpServer/Dockerfile -t localhost:5000/mssqlclient-mcp-server:latest src/
-
-# Push to local registry
-docker push localhost:5000/mssqlclient-mcp-server:latest
-```
-
-#### Using Local Registry
-
-If you have pushed the image to local registry running on port 5000, you can pull from it:
-
-```bash
-# Pull from local registry
-docker pull localhost:5000/mssqlclient-mcp-server:latest
-```
-
 ## MCP Protocol Usage
 
 ### Client Integration
@@ -123,14 +90,13 @@ To connect to the SQL Server MCP Client from your applications:
 2. Configure your client to connect to the server's endpoint
 3. Call the available tools described below
 
-### Available Tools
+## Available Tools
 
 The available tools differ depending on which mode the server is operating in, with some tools available in both modes:
 
-## Common Tools (Available in Both Modes)
+### Common Tools (Both Modes)
 
 #### server_capabilities
-
 Returns detailed information about the capabilities and features of the connected SQL Server instance.
 
 Example request:
@@ -179,43 +145,210 @@ This tool is useful for:
 - Understanding which query patterns will be used
 - Verifying whether you're in server or database mode
 
-## Database Mode Tools
-
-When connected with a specific database in the connection string, the following tools are available:
-
-#### execute_query
-
-Executes a SQL query on the connected SQL Server database.
-
-Parameters:
-- `query` (required): The SQL query to execute.
+#### cursor_guide
+Provides guidance for navigating large result sets using cursors.
 
 Example request:
 ```json
 {
-  "name": "execute_query",
-  "parameters": {
-    "query": "SELECT TOP 5 * FROM Customers"
-  }
+  "name": "cursor_guide",
+  "parameters": { "query": "SELECT * FROM Orders" }
 }
 ```
 
-Example response:
-```
-| CustomerID | CompanyName                      | ContactName        |
-| ---------- | -------------------------------- | ------------------ |
-| ALFKI      | Alfreds Futterkiste              | Maria Anders       |
-| ANATR      | Ana Trujillo Emparedados y h...  | Ana Trujillo       |
-| ANTON      | Antonio Moreno Taquería          | Antonio Moreno     |
-| AROUT      | Around the Horn                  | Thomas Hardy       |
-| BERGS      | Berglunds snabbköp               | Christina Berglund |
+#### paginated_query
+Executes a query and returns results in pages.
 
-Total rows: 5
+Example request:
+```json
+{
+  "name": "paginated_query",
+  "parameters": { "query": "SELECT * FROM Orders", "page": 1, "pageSize": 100 }
+}
 ```
+
+#### query_streamer
+Streams large query results in chunks.
+
+Example request:
+```json
+{
+  "name": "query_streamer",
+  "parameters": { "query": "SELECT * FROM Orders" }
+}
+```
+
+#### export_table_csv
+Exports a table to CSV format.
+
+Example request:
+```json
+{
+  "name": "export_table_csv",
+  "parameters": { "tableName": "Customers" }
+}
+```
+
+#### import_table_csv
+Imports data from a CSV file into a table.
+
+Example request:
+```json
+{
+  "name": "import_table_csv",
+  "parameters": { "tableName": "Customers", "csvData": "...csv content..." }
+}
+```
+
+#### run_script
+Executes a SQL script.
+
+Example request:
+```json
+{
+  "name": "run_script",
+  "parameters": { "script": "CREATE TABLE Test (Id INT)" }
+}
+```
+
+#### discover
+Discovers schema, tables, and other metadata.
+
+Example request:
+```json
+{
+  "name": "discover",
+  "parameters": {}
+}
+```
+
+### Server Mode Tools (No Database in Connection String)
+
+#### server_list_tables
+Lists all tables in all databases.
+
+Example request:
+```json
+{
+  "name": "server_list_tables",
+  "parameters": { "databaseName": "Northwind" }
+}
+```
+
+#### server_list_databases
+Lists all databases on the server.
+
+Example request:
+```json
+{
+  "name": "server_list_databases",
+  "parameters": {}
+}
+```
+
+#### server_get_table_schema
+Gets the schema for a table in a specific database.
+
+Example request:
+```json
+{
+  "name": "server_get_table_schema",
+  "parameters": { "databaseName": "Northwind", "tableName": "Customers" }
+}
+```
+
+#### server_list_stored_procedures
+Lists all stored procedures in a database.
+
+Example request:
+```json
+{
+  "name": "server_list_stored_procedures",
+  "parameters": { "databaseName": "Northwind" }
+}
+```
+
+#### server_get_stored_procedure_definition
+Gets the SQL definition of a stored procedure in a database.
+
+Example request:
+```json
+{
+  "name": "server_get_stored_procedure_definition",
+  "parameters": { "databaseName": "Northwind", "procedureName": "GetCustomerOrders" }
+}
+```
+
+#### server_get_stored_procedure_parameters
+Gets parameter info for a stored procedure in a database.
+
+Example request:
+```json
+{
+  "name": "server_get_stored_procedure_parameters",
+  "parameters": { "databaseName": "Northwind", "procedureName": "CreateNewCustomer" }
+}
+```
+
+#### server_execute_query
+Executes a query in a specific database (if enabled).
+
+Example request:
+```json
+{
+  "name": "server_execute_query",
+  "parameters": { "databaseName": "Northwind", "query": "SELECT * FROM Customers" }
+}
+```
+
+#### server_execute_stored_procedure
+Executes a stored procedure in a specific database (if enabled).
+
+Example request:
+```json
+{
+  "name": "server_execute_stored_procedure",
+  "parameters": { "databaseName": "Northwind", "procedureName": "CreateNewCustomer", "parameters": { "CompanyName": "Acme Corp" } }
+}
+```
+
+#### get_function_details
+Returns metadata about functions in a database.
+
+Example request:
+```json
+{
+  "name": "get_function_details",
+  "parameters": { "databaseName": "Northwind" }
+}
+```
+
+#### get_view_details
+Returns metadata about views in a database.
+
+Example request:
+```json
+{
+  "name": "get_view_details",
+  "parameters": { "databaseName": "Northwind" }
+}
+```
+
+#### get_index_details
+Returns metadata about indexes in a database.
+
+Example request:
+```json
+{
+  "name": "get_index_details",
+  "parameters": { "databaseName": "Northwind" }
+}
+```
+
+### Database Mode Tools (Database in Connection String)
 
 #### list_tables
-
-Lists all tables in the connected SQL Server database with schema and row count information.
+Lists all tables in the connected database.
 
 Example request:
 ```json
@@ -225,57 +358,19 @@ Example request:
 }
 ```
 
-Example response:
-```
-Available Tables:
-
-Schema | Table Name | Row Count
------- | ---------- | ---------
-dbo    | Customers  | 91
-dbo    | Products   | 77
-dbo    | Orders     | 830
-dbo    | Employees  | 9
-```
-
 #### get_table_schema
-
-Gets the schema of a table from the connected SQL Server database.
-
-Parameters:
-- `tableName` (required): The name of the table to get schema information for.
+Gets the schema for a table in the connected database.
 
 Example request:
 ```json
 {
   "name": "get_table_schema",
-  "parameters": {
-    "tableName": "Customers"
-  }
+  "parameters": { "tableName": "Customers" }
 }
 ```
 
-Example response:
-```
-Schema for table: Customers
-
-Column Name | Data Type | Max Length | Is Nullable
------------ | --------- | ---------- | -----------
-CustomerID  | nchar     | 5          | NO
-CompanyName | nvarchar  | 40         | NO
-ContactName | nvarchar  | 30         | YES
-ContactTitle| nvarchar  | 30         | YES
-Address     | nvarchar  | 60         | YES
-City        | nvarchar  | 15         | YES
-Region      | nvarchar  | 15         | YES
-PostalCode  | nvarchar  | 10         | YES
-Country     | nvarchar  | 15         | YES
-Phone       | nvarchar  | 24         | YES
-Fax         | nvarchar  | 24         | YES
-```
-
 #### list_stored_procedures
-
-Lists all stored procedures in the current database with detailed information.
+Lists all stored procedures in the connected database.
 
 Example request:
 ```json
@@ -285,322 +380,47 @@ Example request:
 }
 ```
 
-Example response:
-```
-Available Stored Procedures in 'Northwind':
-
-Schema   | Procedure Name                  | Parameters | Last Execution    | Execution Count | Created Date
--------- | ------------------------------- | ---------- | ----------------- | --------------- | -------------------
-dbo      | GetCustomerOrders               | 2          | 2024-01-15 10:30:00 | 145           | 2023-12-01 09:00:00
-dbo      | UpdateProductPrice              | 3          | 2024-01-14 16:45:00 | 89            | 2023-11-15 14:30:00
-dbo      | CreateNewCustomer               | 5          | N/A               | N/A           | 2024-01-10 11:20:00
-```
-
 #### get_stored_procedure_definition
-
-Gets the SQL definition of a stored procedure.
-
-Parameters:
-- `procedureName` (required): The name of the stored procedure.
+Gets the SQL definition of a stored procedure in the connected database.
 
 Example request:
 ```json
 {
   "name": "get_stored_procedure_definition",
-  "parameters": {
-    "procedureName": "GetCustomerOrders"
-  }
+  "parameters": { "procedureName": "GetCustomerOrders" }
 }
 ```
 
 #### get_stored_procedure_parameters
+Gets parameter info for a stored procedure in the connected database.
 
-Gets parameter information for a stored procedure in table or JSON Schema format.
-
-Parameters:
-- `procedureName` (required): The name of the stored procedure.
-- `format` (optional): Output format - "table" (default) or "json".
-
-Example request (table format):
+Example request:
 ```json
 {
   "name": "get_stored_procedure_parameters",
-  "parameters": {
-    "procedureName": "CreateNewCustomer",
-    "format": "table"
-  }
+  "parameters": { "procedureName": "CreateNewCustomer" }
 }
 ```
 
-Example response (table format):
-```
-Parameters for stored procedure: CreateNewCustomer
+#### execute_query
+Executes a query in the connected database (if enabled).
 
-| Parameter | Type | Required | Direction | Default |
-|-----------|------|----------|-----------|---------|
-| CompanyName | nvarchar(40) | Yes | INPUT | - |
-| ContactName | nvarchar(30) | No | INPUT | NULL |
-| City | nvarchar(15) | No | INPUT | NULL |
-| Country | nvarchar(15) | No | INPUT | USA |
-
-Example usage:
+Example request:
 ```json
 {
-  "CompanyName": "Acme Corp",
-  "ContactName": "John Doe",
-  "City": "Seattle",
-  "Country": "USA"
-}
-```
-```
-
-Example request (JSON Schema format):
-```json
-{
-  "name": "get_stored_procedure_parameters",
-  "parameters": {
-    "procedureName": "CreateNewCustomer",
-    "format": "json"
-  }
-}
-```
-
-Example response (JSON Schema format):
-```json
-{
-  "procedureName": "CreateNewCustomer",
-  "description": "Parameter schema for stored procedure CreateNewCustomer",
-  "parameters": {
-    "type": "object",
-    "properties": {
-      "CompanyName": {
-        "type": "string",
-        "maxLength": 40,
-        "sqlType": "nvarchar(40)",
-        "sqlParameter": "@CompanyName",
-        "position": 1,
-        "isOutput": false,
-        "description": "Parameter @CompanyName of type nvarchar(40)"
-      },
-      "ContactName": {
-        "type": "string",
-        "maxLength": 30,
-        "sqlType": "nvarchar(30)",
-        "sqlParameter": "@ContactName",
-        "position": 2,
-        "isOutput": false,
-        "hasDefault": true,
-        "defaultValue": null,
-        "description": "Parameter @ContactName of type nvarchar(30)"
-      },
-      "Country": {
-        "type": "string",
-        "maxLength": 15,
-        "sqlType": "nvarchar(15)",
-        "sqlParameter": "@Country",
-        "position": 4,
-        "isOutput": false,
-        "hasDefault": true,
-        "defaultValue": "USA",
-        "description": "Parameter @Country of type nvarchar(15)"
-      }
-    },
-    "required": ["CompanyName"],
-    "additionalProperties": false
-  },
-  "returnValue": {
-    "type": "integer",
-    "sqlType": "int",
-    "description": "Return code (0 for success)"
-  }
+  "name": "execute_query",
+  "parameters": { "query": "SELECT * FROM Customers" }
 }
 ```
 
 #### execute_stored_procedure
-
-Executes a stored procedure with automatic parameter type conversion.
-
-Parameters:
-- `procedureName` (required): The name of the stored procedure.
-- `parameters` (required): JSON string containing parameter values.
+Executes a stored procedure in the connected database (if enabled).
 
 Example request:
 ```json
 {
   "name": "execute_stored_procedure",
-  "parameters": {
-    "procedureName": "CreateNewCustomer",
-    "parameters": "{\"CompanyName\": \"Acme Corp\", \"ContactName\": \"John Doe\", \"City\": \"Seattle\"}"
-  }
-}
-```
-
-Features:
-- Automatic JSON-to-SQL type conversion based on stored procedure metadata
-- Support for both `@ParameterName` and `ParameterName` formats
-- Case-insensitive parameter matching
-- Comprehensive error messages with parameter validation
-- Support for output parameters and return values
-
-## Server Mode Tools
-
-When connected without a specific database in the connection string, the following additional tools are available:
-
-#### list_databases
-
-Lists all databases on the SQL Server instance.
-
-Example request:
-```json
-{
-  "name": "list_databases",
-  "parameters": {}
-}
-```
-
-Example response:
-```
-Available Databases:
-
-Name       | State  | Size (MB) | Owner     | Compatibility
----------- | ------ | --------- | --------- | -------------
-master     | ONLINE | 10.25     | sa        | 160
-tempdb     | ONLINE | 25.50     | sa        | 160
-model      | ONLINE | 8.00      | sa        | 160
-msdb       | ONLINE | 15.75     | sa        | 160
-Northwind  | ONLINE | 45.25     | sa        | 160
-```
-
-#### execute_query_in_database
-
-Executes a SQL query in a specific database.
-
-Parameters:
-- `databaseName` (required): The name of the database to execute the query in.
-- `query` (required): The SQL query to execute.
-
-Example request:
-```json
-{
-  "name": "execute_query_in_database",
-  "parameters": {
-    "databaseName": "Northwind",
-    "query": "SELECT TOP 5 * FROM Customers"
-  }
-}
-```
-
-#### list_tables_in_database
-
-Lists all tables in a specific database.
-
-Parameters:
-- `databaseName` (required): The name of the database to list tables from.
-
-Example request:
-```json
-{
-  "name": "list_tables_in_database",
-  "parameters": {
-    "databaseName": "Northwind"
-  }
-}
-```
-
-#### get_table_schema_in_database
-
-Gets the schema of a table from a specific database.
-
-Parameters:
-- `databaseName` (required): The name of the database containing the table.
-- `tableName` (required): The name of the table to get schema information for.
-
-Example request:
-```json
-{
-  "name": "get_table_schema_in_database",
-  "parameters": {
-    "databaseName": "Northwind",
-    "tableName": "Customers"
-  }
-}
-```
-
-#### list_stored_procedures_in_database
-
-Lists all stored procedures in a specific database.
-
-Parameters:
-- `databaseName` (required): The name of the database to list stored procedures from.
-
-Example request:
-```json
-{
-  "name": "list_stored_procedures_in_database",
-  "parameters": {
-    "databaseName": "Northwind"
-  }
-}
-```
-
-#### get_stored_procedure_definition_in_database
-
-Gets the SQL definition of a stored procedure from a specific database.
-
-Parameters:
-- `databaseName` (required): The name of the database containing the stored procedure.
-- `procedureName` (required): The name of the stored procedure.
-
-Example request:
-```json
-{
-  "name": "get_stored_procedure_definition_in_database",
-  "parameters": {
-    "databaseName": "Northwind",
-    "procedureName": "GetCustomerOrders"
-  }
-}
-```
-
-#### get_stored_procedure_parameters (Server Mode)
-
-Gets parameter information for a stored procedure from any database.
-
-Parameters:
-- `procedureName` (required): The name of the stored procedure.
-- `databaseName` (optional): The name of the database containing the stored procedure.
-- `format` (optional): Output format - "table" (default) or "json".
-
-Example request:
-```json
-{
-  "name": "get_stored_procedure_parameters",
-  "parameters": {
-    "procedureName": "CreateNewCustomer",
-    "databaseName": "Northwind",
-    "format": "json"
-  }
-}
-```
-
-#### execute_stored_procedure_in_database
-
-Executes a stored procedure in a specific database with automatic parameter type conversion.
-
-Parameters:
-- `databaseName` (required): The name of the database containing the stored procedure.
-- `procedureName` (required): The name of the stored procedure.
-- `parameters` (required): JSON string containing parameter values.
-
-Example request:
-```json
-{
-  "name": "execute_stored_procedure_in_database",
-  "parameters": {
-    "databaseName": "Northwind",
-    "procedureName": "CreateNewCustomer",
-    "parameters": "{\"CompanyName\": \"Acme Corp\", \"ContactName\": \"John Doe\"}"
-  }
+  "parameters": { "procedureName": "CreateNewCustomer", "parameters": { "CompanyName": "Acme Corp" } }
 }
 ```
 
