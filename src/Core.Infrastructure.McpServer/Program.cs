@@ -231,6 +231,32 @@ namespace Core.Infrastructure.McpServer
                 {
                     Console.Error.WriteLine("ServerExecuteStoredProcedureTool registration skipped (EnableExecuteStoredProcedure is false)");
                 }
+                
+                mcpServerBuilder.WithTools<GetFunctionDetailsTool>();
+                Console.Error.WriteLine("Registered GetFunctionDetailsTool");
+                mcpServerBuilder.WithTools<GetViewDetailsTool>();
+                Console.Error.WriteLine("Registered GetViewDetailsTool");
+                mcpServerBuilder.WithTools<GetIndexDetailsTool>();
+                Console.Error.WriteLine("Registered GetIndexDetailsTool");
+                
+                mcpServerBuilder.WithTools<PaginatedQueryTool>();
+                Console.Error.WriteLine("Registered PaginatedQueryTool");
+                
+                mcpServerBuilder.WithTools<QueryStreamerTool>();
+                Console.Error.WriteLine("Registered QueryStreamerTool");
+                
+                mcpServerBuilder.WithTools<CursorGuideTool>();
+                Console.Error.WriteLine("Registered CursorGuideTool");
+                
+                mcpServerBuilder.WithTools<DiscoverTool>();
+                Console.Error.WriteLine("Registered DiscoverTool");
+                
+                mcpServerBuilder.WithTools<ExportTableCsvTool>();
+                Console.Error.WriteLine("Registered ExportTableCsvTool");
+                mcpServerBuilder.WithTools<ImportTableCsvTool>();
+                Console.Error.WriteLine("Registered ImportTableCsvTool");
+                mcpServerBuilder.WithTools<RunScriptTool>();
+                Console.Error.WriteLine("Registered RunScriptTool");
             }
             else
             {
@@ -275,6 +301,32 @@ namespace Core.Infrastructure.McpServer
                 {
                     Console.Error.WriteLine("ExecuteStoredProcedureTool registration skipped (EnableExecuteStoredProcedure is false)");
                 }
+                
+                mcpServerBuilder.WithTools<GetFunctionDetailsTool>();
+                Console.Error.WriteLine("Registered GetFunctionDetailsTool");
+                mcpServerBuilder.WithTools<GetViewDetailsTool>();
+                Console.Error.WriteLine("Registered GetViewDetailsTool");
+                mcpServerBuilder.WithTools<GetIndexDetailsTool>();
+                Console.Error.WriteLine("Registered GetIndexDetailsTool");
+                
+                mcpServerBuilder.WithTools<PaginatedQueryTool>();
+                Console.Error.WriteLine("Registered PaginatedQueryTool");
+                
+                mcpServerBuilder.WithTools<QueryStreamerTool>();
+                Console.Error.WriteLine("Registered QueryStreamerTool");
+                
+                mcpServerBuilder.WithTools<CursorGuideTool>();
+                Console.Error.WriteLine("Registered CursorGuideTool");
+                
+                mcpServerBuilder.WithTools<DiscoverTool>();
+                Console.Error.WriteLine("Registered DiscoverTool");
+                
+                mcpServerBuilder.WithTools<ExportTableCsvTool>();
+                Console.Error.WriteLine("Registered ExportTableCsvTool");
+                mcpServerBuilder.WithTools<ImportTableCsvTool>();
+                Console.Error.WriteLine("Registered ImportTableCsvTool");
+                mcpServerBuilder.WithTools<RunScriptTool>();
+                Console.Error.WriteLine("Registered RunScriptTool");
             }
             
             Console.Error.WriteLine("All tools registered. Building MCP server..."); 
