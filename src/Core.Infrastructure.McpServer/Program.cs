@@ -250,6 +250,13 @@ namespace Core.Infrastructure.McpServer
                 
                 mcpServerBuilder.WithTools<DiscoverTool>();
                 Console.Error.WriteLine("Registered DiscoverTool");
+                
+                mcpServerBuilder.WithTools<ExportTableCsvTool>();
+                Console.Error.WriteLine("Registered ExportTableCsvTool");
+                mcpServerBuilder.WithTools<ImportTableCsvTool>();
+                Console.Error.WriteLine("Registered ImportTableCsvTool");
+                mcpServerBuilder.WithTools<RunScriptTool>();
+                Console.Error.WriteLine("Registered RunScriptTool");
             }
             else
             {
@@ -313,6 +320,13 @@ namespace Core.Infrastructure.McpServer
                 
                 mcpServerBuilder.WithTools<DiscoverTool>();
                 Console.Error.WriteLine("Registered DiscoverTool");
+                
+                mcpServerBuilder.WithTools<ExportTableCsvTool>();
+                Console.Error.WriteLine("Registered ExportTableCsvTool");
+                mcpServerBuilder.WithTools<ImportTableCsvTool>();
+                Console.Error.WriteLine("Registered ImportTableCsvTool");
+                mcpServerBuilder.WithTools<RunScriptTool>();
+                Console.Error.WriteLine("Registered RunScriptTool");
             }
             
             Console.Error.WriteLine("All tools registered. Building MCP server..."); 
