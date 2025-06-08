@@ -41,12 +41,12 @@ The MCP client operates in one of two modes:
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/aadversteeg/mssqlclient-mcp-server.git
+   git clone https://github.com/akashCF/dotnet-mssql-mcp.git
    ```
 
 2. Navigate to the project root directory:
    ```bash
-   cd mssqlclient-mcp-server
+   cd dotnet-mssql-mcp
    ```
 
 3. Build the project using:
@@ -62,7 +62,7 @@ The SQL Server MCP Client is available on Docker Hub.
 
 ```bash
 # Pull the latest version
-docker pull aadversteeg/mssqlclient-mcp-server:latest
+docker pull akashcf/dotnet-mssql-mcp:latest
 ```
 
 ### Manual Docker Build
@@ -71,13 +71,13 @@ If you need to build the Docker image yourself:
 
 ```bash
 # Navigate to the repository root
-cd mssqlclient-mcp-server
+cd dotnet-mssql-mcp
 
 # Build the Docker image
-docker build -f src/Core.Infrastructure.McpServer/Dockerfile -t mssqlclient-mcp-server:latest src/
+docker build -f src/Core.Infrastructure.McpServer/Dockerfile -t dotnet-mssql-mcp:latest src/
 
 # Run the locally built image
-docker run -d --name mssql-mcp -e "MSSQL_CONNECTIONSTRING=Server=your_server;Database=your_db;User Id=your_user;Password=your_password;TrustServerCertificate=True;" mssqlclient-mcp-server:latest
+docker run -d --name mssql-mcp -e "MSSQL_CONNECTIONSTRING=Server=your_server;Database=your_db;User Id=your_user;Password=your_password;TrustServerCertificate=True;" dotnet-mssql-mcp:latest
 ```
 
 ## MCP Protocol Usage
@@ -424,6 +424,21 @@ Example request:
 }
 ```
 
+## Solution Structure
+
+- **src/mssqlclient.sln**: Main solution file.
+- **Core.Infrastructure.McpServer/**: Main server implementation and entry point (`Program.cs`).
+- **Core.Application/**: Core application logic and interfaces.
+- **Core.Infrastructure.SqlClient/**: SQL Server-specific data access and services.
+- **UnitTests.Infrastructure.McpServer/**, **UnitTests.Infrastructure.SqlClient/**: Unit tests for server and SQL client logic.
+- **scripts/**: Utility scripts for versioning and maintenance.
+- **cleanup-tools.sh**, **cleanup-tools.bat**: Scripts to clean up build artifacts and tools.
+
+## Utility Scripts
+
+- **scripts/create-version.ps1**: PowerShell script for version management.
+- **cleanup-tools.sh**, **cleanup-tools.bat**: Clean up build artifacts and temporary files.
+
 ## Configuration
 
 ### Tool Security Configuration
@@ -454,7 +469,7 @@ docker run \
   -e "EnableExecuteQuery=true" \
   -e "EnableExecuteStoredProcedure=true" \
   -e "MSSQL_CONNECTIONSTRING=Server=your_server;..." \
-  aadversteeg/mssqlclient-mcp-server:latest
+  akashcf/dotnet-mssql-mcp:latest
 ```
 
 3. In the Claude Desktop configuration:
@@ -503,14 +518,14 @@ docker run \
   -e "EnableExecuteQuery=true" \
   -e "EnableExecuteStoredProcedure=true" \
   -e "MSSQL_CONNECTIONSTRING=Server=your_server;Database=your_db;User Id=your_user;Password=your_password;TrustServerCertificate=True;" \
-  aadversteeg/mssqlclient-mcp-server:latest
+  akashcf/dotnet-mssql-mcp:latest
 
 # Server Mode with both execution types enabled
 docker run \
   -e "EnableExecuteQuery=true" \
   -e "EnableExecuteStoredProcedure=true" \
   -e "MSSQL_CONNECTIONSTRING=Server=your_server;User Id=your_user;Password=your_password;TrustServerCertificate=True;" \
-  aadversteeg/mssqlclient-mcp-server:latest
+  akashcf/dotnet-mssql-mcp:latest
 ```
 
 #### Server Mode vs Database Mode
@@ -578,7 +593,7 @@ To use the SQL Server MCP client from a Docker container with Claude Desktop:
     "-e", "MSSQL_CONNECTIONSTRING=Server=your_server;Database=your_db;User Id=your_user;Password=your_password;TrustServerCertificate=True;",
     "-e", "EnableExecuteQuery=true",
     "-e", "EnableExecuteStoredProcedure=true",
-    "aadversteeg/mssqlclient-mcp-server:latest"
+    "akashcf/dotnet-mssql-mcp:latest"
   ]
 }
 ```
