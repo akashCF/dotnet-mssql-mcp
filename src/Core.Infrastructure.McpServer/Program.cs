@@ -257,6 +257,36 @@ namespace Core.Infrastructure.McpServer
                 Console.Error.WriteLine("Registered ImportTableCsvTool");
                 mcpServerBuilder.WithTools<RunScriptTool>();
                 Console.Error.WriteLine("Registered RunScriptTool");
+                
+                // Additional database object tools
+                mcpServerBuilder.WithTools<ListSchemasTool>();
+                Console.Error.WriteLine("Registered ListSchemasTool");
+                mcpServerBuilder.WithTools<ListViewsTool>();
+                Console.Error.WriteLine("Registered ListViewsTool");
+                mcpServerBuilder.WithTools<ListFunctionsTool>();
+                Console.Error.WriteLine("Registered ListFunctionsTool");
+                mcpServerBuilder.WithTools<ListTriggersTool>();
+                Console.Error.WriteLine("Registered ListTriggersTool");
+                mcpServerBuilder.WithTools<ListRelationshipsTool>();
+                Console.Error.WriteLine("Registered ListRelationshipsTool");
+                
+                // Definition tools
+                mcpServerBuilder.WithTools<GetViewDefinitionTool>();
+                Console.Error.WriteLine("Registered GetViewDefinitionTool");
+                mcpServerBuilder.WithTools<GetFunctionDefinitionTool>();
+                Console.Error.WriteLine("Registered GetFunctionDefinitionTool");
+                mcpServerBuilder.WithTools<GetTriggerDefinitionTool>();
+                Console.Error.WriteLine("Registered GetTriggerDefinitionTool");
+                
+                // Table analysis tools
+                mcpServerBuilder.WithTools<GetTableConstraintsTool>();
+                Console.Error.WriteLine("Registered GetTableConstraintsTool");
+                mcpServerBuilder.WithTools<GetTableIndexesTool>();
+                Console.Error.WriteLine("Registered GetTableIndexesTool");
+                mcpServerBuilder.WithTools<GetTableStatisticsTool>();
+                Console.Error.WriteLine("Registered GetTableStatisticsTool");
+                mcpServerBuilder.WithTools<GetDefaultConstraintDefinitionTool>();
+                Console.Error.WriteLine("Registered GetDefaultConstraintDefinitionTool");
             }
             else
             {
@@ -327,6 +357,36 @@ namespace Core.Infrastructure.McpServer
                 Console.Error.WriteLine("Registered ImportTableCsvTool");
                 mcpServerBuilder.WithTools<RunScriptTool>();
                 Console.Error.WriteLine("Registered RunScriptTool");
+                
+                // Additional database object tools
+                mcpServerBuilder.WithTools<ListSchemasTool>();
+                Console.Error.WriteLine("Registered ListSchemasTool");
+                mcpServerBuilder.WithTools<ListViewsTool>();
+                Console.Error.WriteLine("Registered ListViewsTool");
+                mcpServerBuilder.WithTools<ListFunctionsTool>();
+                Console.Error.WriteLine("Registered ListFunctionsTool");
+                mcpServerBuilder.WithTools<ListTriggersTool>();
+                Console.Error.WriteLine("Registered ListTriggersTool");
+                mcpServerBuilder.WithTools<ListRelationshipsTool>();
+                Console.Error.WriteLine("Registered ListRelationshipsTool");
+                
+                // Definition tools
+                mcpServerBuilder.WithTools<GetViewDefinitionTool>();
+                Console.Error.WriteLine("Registered GetViewDefinitionTool");
+                mcpServerBuilder.WithTools<GetFunctionDefinitionTool>();
+                Console.Error.WriteLine("Registered GetFunctionDefinitionTool");
+                mcpServerBuilder.WithTools<GetTriggerDefinitionTool>();
+                Console.Error.WriteLine("Registered GetTriggerDefinitionTool");
+                
+                // Table analysis tools
+                mcpServerBuilder.WithTools<GetTableConstraintsTool>();
+                Console.Error.WriteLine("Registered GetTableConstraintsTool");
+                mcpServerBuilder.WithTools<GetTableIndexesTool>();
+                Console.Error.WriteLine("Registered GetTableIndexesTool");
+                mcpServerBuilder.WithTools<GetTableStatisticsTool>();
+                Console.Error.WriteLine("Registered GetTableStatisticsTool");
+                mcpServerBuilder.WithTools<GetDefaultConstraintDefinitionTool>();
+                Console.Error.WriteLine("Registered GetDefaultConstraintDefinitionTool");
             }
             
             Console.Error.WriteLine("All tools registered. Building MCP server..."); 
